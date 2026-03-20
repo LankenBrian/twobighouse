@@ -33,17 +33,21 @@ export default function Home() {
     setError(null);
 
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('image_file', file);
+    formData.append('size', 'auto');
 
     try {
-      const response = await fetch('http://43.156.150.165:5000/remove-background', {
+      const response = await fetch('https://api.remove.bg/v1.0/removebg', {
         method: 'POST',
+        headers: {
+          'X-Api-Key': 'YKWuLgGq1CL3uBKAwmFm6Adg',
+        },
         body: formData,
       });
 
       if (!response.ok) {
         const errData = await response.json();
-        throw new Error(errData.error || '处理失败');
+        throw new Error(errData.errors?.[0]?.title || '处理失败');
       }
 
       const blob = await response.blob();
